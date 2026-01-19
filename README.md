@@ -7,7 +7,7 @@
 [![React](https://img.shields.io/badge/React-18-61dafb)](https://react.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Tags:** `#mcp` `#multi-agent` `#rag` `#weaviate` `#fastapi` `#react` `#streaming` `#gsoc`
+**Tags:** `#mcp` `#multi-agent` `#rag` `#weaviate` `#fastapi` `#react` `#streaming` 
 
 ## 🎯 Overview
 
