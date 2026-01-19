@@ -1,0 +1,20 @@
+{
+  "name": "sample_plugin",
+  "version": "0.1.0",
+  "description": "Sample plugin with utility tools",
+  "tools": [
+    {
+      "name": "word_count",
+      "description": "Count words in a given text",
+      "handler": "plugins.sample_plugin.word_count.WordCountTool",
+      "parameters_schema": {
+        "type": "object",
+        "properties": {
+          "text": {"type": "string"}
+        },
+        "required": ["text"],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

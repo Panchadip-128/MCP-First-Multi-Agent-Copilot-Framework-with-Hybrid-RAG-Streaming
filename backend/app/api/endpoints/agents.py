@@ -3,8 +3,11 @@
 from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from typing import Any, Dict, Optional
+from typing import List
 import json
 import re
+
+from app.core.workflow import WorkflowOrchestrator
 
 router = APIRouter()
 
@@ -23,6 +26,13 @@ class MultiAgentRequest(BaseModel):
     goal: str
     project_id: Optional[str] = None
     use_memory: bool = True
+
+
+class WorkflowRequest(BaseModel):
+    goal: str
+    project_id: Optional[str] = None
+    use_memory: bool = True
+    run_tools: bool = True
 
 
 class MultiAgentResponse(BaseModel):
@@ -186,3 +196,23 @@ async def run_multi_agent(request: Request, payload: MultiAgentRequest) -> Multi
     )
 
     return MultiAgentResponse(**result)
+
+
+@router.post("/workflow")
+async def run_workflow(req: WorkflowRequest, request: Request):
+    llm = request.app.state.llm_router
+    rag = request.app.state.rag_memory
+    mcp = request.app.state.mcp_protocol
+
+    orchestrator = WorkflowOrchestrator(llm=llm, rag=rag, mcp=mcp)
+    try:
+        result = await orchestrator.run(
+            goal=req.goal,
+            project_id=req.project_id,
+            use_memory=req.use_memory,
+            run_tools=req.run_tools,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+    return result

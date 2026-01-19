@@ -4,7 +4,7 @@ API routes for the LLM Copilot Framework.
 
 from fastapi import APIRouter
 
-from app.api.endpoints import chat, projects, tools, memory, health, agents
+from app.api.endpoints import chat, projects, tools, memory, health, agents, plugins, eval
 
 api_router = APIRouter()
 
@@ -15,3 +15,5 @@ api_router.include_router(projects.router, prefix="/projects", tags=["projects"]
 api_router.include_router(tools.router, prefix="/tools", tags=["tools"])
 api_router.include_router(memory.router, prefix="/memory", tags=["memory"])
 api_router.include_router(agents.router, prefix="/agents", tags=["agents"])
+api_router.include_router(plugins.router, prefix="/plugins", tags=["plugins"])
+api_router.include_router(eval.router, prefix="/eval", tags=["evaluation"])

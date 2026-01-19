@@ -13,7 +13,7 @@ type ToolSpec = {
 }
 
 export default function ToolsPage() {
-  const { data: toolSpecs, isLoading } = useQuery({
+  const { data: toolSpecs, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['tool-specs'],
     queryFn: api.getToolSpecs,
   })
@@ -48,6 +48,31 @@ export default function ToolsPage() {
       setAgentError(err?.message || 'Multi-agent run failed')
       setAgentResult(null)
     },
+  })
+
+  const [workflowGoal, setWorkflowGoal] = useState('')
+  const [workflowResult, setWorkflowResult] = useState<string | null>(null)
+  const [workflowError, setWorkflowError] = useState<string | null>(null)
+
+  const workflowMutation = useMutation({
+    mutationFn: api.runWorkflow,
+    onSuccess: (data) => {
+      setWorkflowResult(JSON.stringify(data, null, 2))
+      setWorkflowError(null)
+    },
+    onError: (err: any) => {
+      setWorkflowError(err?.message || 'Workflow run failed')
+      setWorkflowResult(null)
+    },
+  })
+
+  const { data: plugins } = useQuery({
+    queryKey: ['plugins'],
+    queryFn: api.getPlugins,
+  })
+
+  const reloadPluginsMutation = useMutation({
+    mutationFn: api.reloadPlugins,
   })
   
   return (
@@ -143,10 +168,96 @@ export default function ToolsPage() {
             </pre>
           )}
         </div>
+
+        <div className="mb-8 bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 className="text-xl font-semibold mb-2">Industry Workflow (Trace + Tools + Review)</h2>
+          <p className="text-gray-400 text-sm mb-4">
+            Runs planning, optional tool execution, coding, review, and tests with a full trace.
+          </p>
+          <textarea
+            value={workflowGoal}
+            onChange={(e) => setWorkflowGoal(e.target.value)}
+            placeholder="Example: Add a new endpoint to list tools with schemas and document it"
+            className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white min-h-[100px]"
+          />
+          <div className="flex items-center gap-3 mt-4">
+            <button
+              onClick={() => workflowMutation.mutate({ goal: workflowGoal, run_tools: true })}
+              disabled={workflowMutation.isPending || !workflowGoal.trim()}
+              className="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded text-sm"
+            >
+              {workflowMutation.isPending ? 'Running...' : 'Run Workflow'}
+            </button>
+            <button
+              onClick={() => {
+                setWorkflowGoal('')
+                setWorkflowResult(null)
+                setWorkflowError(null)
+              }}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm"
+            >
+              Reset
+            </button>
+          </div>
+
+          {workflowError && (
+            <div className="text-red-400 text-sm mt-3">{workflowError}</div>
+          )}
+
+          {workflowResult && (
+            <pre className="bg-gray-900 border border-gray-700 rounded p-3 text-sm text-gray-200 overflow-x-auto mt-3">
+{workflowResult}
+            </pre>
+          )}
+        </div>
+
+        <div className="mb-8 bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl font-semibold">Plugins</h2>
+            <button
+              onClick={() => reloadPluginsMutation.mutate()}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm"
+            >
+              Reload
+            </button>
+          </div>
+          <p className="text-gray-400 text-sm mb-4">
+            Loaded plugin manifests and tools.
+          </p>
+
+          {!plugins || plugins.length === 0 ? (
+            <div className="text-gray-400 text-sm">No plugins loaded.</div>
+          ) : (
+            <div className="space-y-3">
+              {plugins.map((p: any, idx: number) => (
+                <div key={idx} className="bg-gray-900 border border-gray-700 rounded p-3">
+                  <div className="text-white font-semibold">{p.name}</div>
+                  <div className="text-gray-400 text-sm">{p.description}</div>
+                  <div className="text-gray-500 text-xs">v{p.version}</div>
+                  <div className="mt-2 text-gray-300 text-sm">
+                    Tools: {(p.tools || []).map((t: any) => t.name).join(', ')}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+          </div>
+        ) : isError ? (
+          <div className="bg-gray-800 rounded-lg p-6 border border-red-700">
+            <div className="text-red-400 text-sm mb-3">
+              Failed to load tools: {(error as any)?.message || 'Unknown error'}
+            </div>
+            <button
+              onClick={() => refetch()}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm"
+            >
+              Retry
+            </button>
           </div>
         ) : toolSpecs && toolSpecs.length > 0 ? (
           <div className="grid gap-4">

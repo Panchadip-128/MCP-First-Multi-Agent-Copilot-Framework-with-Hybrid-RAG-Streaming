@@ -126,6 +126,7 @@ async def index_code(
     request: Request,
     project_id: str,
     file: UploadFile = File(...),
+    background_tasks: BackgroundTasks = None,
 ) -> Dict[str, Any]:
     """
     Index a code file for RAG memory.
@@ -137,37 +138,30 @@ async def index_code(
     
     project = projects_db[project_id]
     rag = request.app.state.rag_memory
-    
-    # Read file content
+
+    # Read file content once (avoid keeping UploadFile open in background)
     content = await file.read()
-    code_text = content.decode("utf-8")
-    
-    # Simple chunking (TODO: Use smarter AST-based chunking)
-    lines = code_text.split("\n")
-    chunk_size = 50  # lines per chunk
-    
-    chunks_added = 0
-    for i in range(0, len(lines), chunk_size):
-        chunk_lines = lines[i:i + chunk_size]
-        chunk_content = "\n".join(chunk_lines)
-        
-        if chunk_content.strip():
-            await rag.add_document(
-                content=chunk_content,
-                file_path=file.filename or "unknown",
-                language=project.language,
-                project_id=project_id,
-                start_line=i + 1,
-                end_line=i + len(chunk_lines),
-                chunk_type="code",
-            )
-            chunks_added += 1
-    
+    code_text = content.decode("utf-8", errors="ignore")
+
+    if background_tasks is None:
+        # Fallback to inline indexing if background tasks aren't available
+        background_tasks = BackgroundTasks()
+
+    background_tasks.add_task(
+        _index_file_task,
+        rag,
+        project_id,
+        file.filename or "unknown",
+        project.language,
+        code_text,
+    )
+
     return {
         "success": True,
         "project_id": project_id,
         "file": file.filename,
-        "chunks_added": chunks_added,
+        "status": "indexing_started",
+        "message": "Indexing started in background. Check project stats for progress.",
     }
 
 
@@ -246,3 +240,38 @@ async def _index_directory_task(
         
     except Exception as e:
         logger.error(f"Failed to index directory: {e}")
+
+
+async def _index_file_task(
+    rag_memory,
+    project_id: str,
+    file_path: str,
+    language: str,
+    code_text: str,
+):
+    """Background task to index a single file."""
+    try:
+        logger.info(f"Starting file indexing for project {project_id}: {file_path}")
+
+        lines = code_text.split("\n")
+        chunk_size = 50
+        chunks_added = 0
+
+        for i in range(0, len(lines), chunk_size):
+            chunk_lines = lines[i:i + chunk_size]
+            chunk_content = "\n".join(chunk_lines)
+            if chunk_content.strip():
+                await rag_memory.add_document(
+                    content=chunk_content,
+                    file_path=file_path,
+                    language=language,
+                    project_id=project_id,
+                    start_line=i + 1,
+                    end_line=i + len(chunk_lines),
+                    chunk_type="code",
+                )
+                chunks_added += 1
+
+        logger.info(f"✅ Indexed {chunks_added} chunks for project {project_id} ({file_path})")
+    except Exception as e:
+        logger.error(f"Failed to index file {file_path}: {e}")

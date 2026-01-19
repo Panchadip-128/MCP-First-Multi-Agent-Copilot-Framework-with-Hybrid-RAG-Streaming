@@ -37,6 +37,10 @@ class Settings(BaseSettings):
 
     # Workspace
     WORKSPACE_ROOT: str = Field(default="/mnt/d/proj1", validation_alias="WORKSPACE_ROOT")
+
+    # Plugins
+    PLUGINS_ENABLED: bool = Field(default=True, validation_alias="PLUGINS_ENABLED")
+    PLUGINS_DIR: str = Field(default="/mnt/d/proj1/backend/plugins", validation_alias="PLUGINS_DIR")
     
     # LLM Providers
     OPENAI_API_KEY: str = Field(default="", validation_alias="OPENAI_API_KEY")

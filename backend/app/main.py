@@ -13,6 +13,7 @@ from app.api.routes import api_router
 from app.core.mcp_protocol import MCPProtocol
 from app.core.rag_memory import RAGMemoryEngine
 from app.core.llm_router import LLMRouter
+from app.core.plugin_manager import PluginManager
 from app.tools import CalculatorTool, CodeSearchTool, FileReadTool
 
 
@@ -73,6 +74,10 @@ async def lifespan(app: FastAPI):
             "additionalProperties": False,
         },
     )
+
+    # Load plugins
+    app.state.plugin_manager = PluginManager(app.state.mcp_protocol)
+    app.state.plugin_manager.load_plugins()
     
     # Initialize connections
     await app.state.rag_memory.initialize()
