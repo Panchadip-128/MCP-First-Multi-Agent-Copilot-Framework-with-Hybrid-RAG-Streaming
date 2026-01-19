@@ -1,4 +1,4 @@
-# 🧠 LLM Copilot Framework
+#  LLM Copilot Framework: MCP First Multi Agent Framework with Hybrid RAG Streaming
 
 > Open-source, research-grade framework for developer copilots with MCP orchestration, hybrid RAG, streaming chat, and multi-agent workflows.
 
@@ -9,7 +9,7 @@
 
 **Tags:** `#mcp` `#multi-agent` `#rag` `#weaviate` `#fastapi` `#react` `#streaming` 
 
-## 🎯 Overview
+##  Overview
 
 This project builds an industry-grade copilot platform that combines:
 - **MCP protocol** for tool routing and agent messaging
@@ -18,7 +18,7 @@ This project builds an industry-grade copilot platform that combines:
 - **Multi-agent workflows** (planner → coder → reviewer → tester)
 - **Pluggable tools** with JSON-schema validation
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -37,7 +37,7 @@ This project builds an industry-grade copilot platform that combines:
 └──────────────┴──────────────┴──────────────┴────────────────┘
 ```
 
-## ✅ Implemented Features
+##  Implemented Features
 
 ### MCP & Tools
 - Tool registry with JSON‑schema validation
@@ -65,7 +65,7 @@ This project builds an industry-grade copilot platform that combines:
 - Groq + OpenAI providers
 - Default provider switchable via config
 
-## 🧩 Tech Stack
+##  Tech Stack
 
 **Backend**
 - FastAPI, Pydantic, Weaviate
@@ -94,7 +94,7 @@ npm run dev
 
 Open the URL Vite prints (e.g., http://localhost:3002).
 
-## 🔑 Environment
+##  Environment
 
 Set keys in [backend/.env](backend/.env):
 
@@ -136,7 +136,7 @@ POST /api/v1/memory/search
 - MCP streaming tool traces in UI
 - VS Code extension integration
 
-## 🤝 Contributing
+##  Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
