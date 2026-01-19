@@ -1,0 +1,7 @@
+# Run these commands in Windows PowerShell:
+
+cd D:\proj1\frontend
+npm install
+npm run dev
+
+# Then open your browser to: http://localhost:3000
