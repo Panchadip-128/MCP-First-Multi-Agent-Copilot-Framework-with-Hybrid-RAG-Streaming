@@ -53,6 +53,11 @@ This project builds an industry-grade copilot platform that combines:
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
+## Workflow Architecture
+
+<img width="530" height="810" alt="image" src="https://github.com/user-attachments/assets/77f6de73-f970-4764-acc4-cfdbba570302" />
+
+
 ## Implemented Features
 
 ### MCP and Tools
