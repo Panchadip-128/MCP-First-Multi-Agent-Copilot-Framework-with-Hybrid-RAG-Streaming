@@ -60,6 +60,17 @@ This project builds an industry-grade copilot platform that combines:
 <img width="530" height="810" alt="image" src="https://github.com/user-attachments/assets/77f6de73-f970-4764-acc4-cfdbba570302" />
 
 
+## Platform Features & Screenshots
+
+### Chat Interface (Streaming UI)
+![Chat Interface Demo](chat_ui.png)
+
+### Projects & RAG Engine
+![Projects UI Demo](projects_ui.png)
+
+### MCP Tool Registry
+![Tools UI Demo](tools_ui.png)
+
 ## Implemented Features
 
 ### MCP and Tools
