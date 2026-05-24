@@ -9,6 +9,8 @@ Open-source, production-oriented framework for developer copilots with MCP orche
 
 ## Overview
 
+![Multi-Agent Testing Demo](multi_agent_demo.png)
+
 This project builds an industry-grade copilot platform that combines:
 - **MCP protocol** for tool routing and agent messaging
 - **Hybrid RAG** (vector + BM25) for robust retrieval
