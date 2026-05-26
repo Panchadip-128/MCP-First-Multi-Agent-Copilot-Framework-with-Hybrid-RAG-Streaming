@@ -9,7 +9,7 @@ Open-source, production-oriented framework for developer copilots with MCP orche
 
 ## Overview
 
-![Multi-Agent Testing Demo](multi_agent_demo.png)
+![Home Dashboard](home_dashboard.png)
 
 This project builds an industry-grade copilot platform that combines:
 - **MCP protocol** for tool routing and agent messaging
@@ -62,14 +62,29 @@ This project builds an industry-grade copilot platform that combines:
 
 ## Platform Features & Screenshots
 
+### Home Dashboard
+![Home Dashboard](home_dashboard.png)
+
 ### Chat Interface (Streaming UI)
-![Chat Interface Demo](chat_ui.png)
+![Chat Interface Demo](chat_streaming_ui.png)
 
 ### Projects & RAG Engine
-![Projects UI Demo](projects_ui.png)
+![Projects & RAG Memory Engine](projects_rag_engine.png)
+
+### Hybrid RAG Search
+![RAG Memory Search](rag_memory_search.png)
 
 ### MCP Tool Registry
-![Tools UI Demo](tools_ui.png)
+![MCP Tools Registry](mcp_tools_registry.png)
+
+### Multi-Agent Orchestration
+![Multi-Agent Workflow](multi_agent_workflow.png)
+
+### Workflow Orchestration
+![Workflow Orchestration](workflow_orchestration.png)
+
+### API Documentation (Swagger)
+![API Swagger Docs](api_swagger_docs.png)
 
 ## Implemented Features
 
